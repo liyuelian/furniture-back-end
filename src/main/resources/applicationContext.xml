@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--spring的配置文件：主要配置和业务逻辑有关的，比如数据源，事务控制等-->
+
+    <!--(1)配置扫描com.li.furn包（控制器除外，它由springmvc管理）-->
+    <context:component-scan base-package="com.li.furn">
+        <!--排除扫描 @Controller注解-->
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--(2)配置数据源-->
+    <!--2.1引入外部的属性文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--2.2配置数据源对象-DataSource-->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="pooledDataSource">
+        <!--给数据源对象配置属性值-->
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.pwd}"/>
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+    </bean>
+
+    <!--(3)配置spring和mybatis的整合
+        3.1在项目中要引入mybatis整合到spring的适配库 mybatis-spring-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+        <!--指定mybatis的全局配置文件mybatis-config.xml-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--指定数据源-->
+        <property name="dataSource" ref="pooledDataSource"/>
+        <!--指定mybatis的 mapper.xml文件的位置
+            我们在开发中通常把 mapper.xml放在类路径下 resource/mapper
+            所以这里指定的value是 classpath:mapper/*.xml-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!--(4)配置扫描器，将mybatis接口的实现加入到ioc容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--扫描所有的dao接口的实现，将入到ioc容器中，这里的dao接口就是mapper接口
+        （mapper接口放在com.li.furn.dao下，因为mybatis处于DAO层，用于操作数据库）-->
+        <property name="basePackage" value="com.li.furn.dao"/>
+    </bean>
+
+    <!--(5)配置事务管理器对象-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          id="transactionManager">
+        <property name="dataSource" ref="pooledDataSource"/>
+    </bean>
+
+    <!--(6)配置开启基于注解的事务（这里使用xml+切入表达式），并指定切入点-->
+    <!--6.1指定事务规则，即指定事务如何切入-->
+    <tx:advice id="txAdvice">
+        <tx:attributes>
+            <!--*代表所有方法都是事务方法-->
+            <tx:method name="*"/>
+            <!--以get开头的所有方法，我们认为是只读的，进行调优-->
+            <tx:method name="get*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--6.2配置切入表表达式，引用上面的事务规则，即在匹配切入表达的方法中使用上述的事务规则-->
+    <aop:config>
+        <!--切入表达式-->
+        <aop:pointcut id="txPoint" expression="execution(* com.li.furn.service..*(..))"/>
+        <!--配置事务规则，使用上面的txAdvice，指定规则对txPoint进行切入-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+    </aop:config>
+
+</beans>
