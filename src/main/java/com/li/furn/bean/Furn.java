@@ -1,5 +1,7 @@
 package com.li.furn.bean;
 
+import org.springframework.util.StringUtils;
+
 import java.math.BigDecimal;
 
 public class Furn {
@@ -15,7 +17,7 @@ public class Furn {
 
     private Integer stock;
 
-    private String imgPath;
+    private String imgPath = "/assets/images/product-image/1.jpg";
 
     //声明无参构造器
     public Furn() {
@@ -30,7 +32,12 @@ public class Furn {
         this.price = price;
         this.sales = sales;
         this.stock = stock;
-        this.imgPath = imgPath;
+        //如果新的家具信息的图片不为空，或者不为空串时，就设置，否则为默认值
+        //imgPath != null && !imgPath.equals("")
+        // =>使用StringUtils.hasText()代替
+        if (StringUtils.hasText(imgPath)) {
+            this.imgPath = imgPath;
+        }
     }
 
     public Integer getId() {
