@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author 李
@@ -35,5 +36,13 @@ public class FurnServiceTest {
         furnService.save(furn);
         System.out.println("添加成功");
         //关闭sqlSession的动作底层会自动释放
+    }
+
+    @Test
+    public void findAll() {
+        List<Furn> all = furnService.findAll();
+        for (Furn furn : all) {
+            System.out.println("furn=" + furn);
+        }
     }
 }

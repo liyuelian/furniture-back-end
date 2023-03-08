@@ -6,6 +6,7 @@ import com.li.furn.service.FurnService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author 李
@@ -21,5 +22,11 @@ public class FurnServiceImpl implements FurnService {
     @Override
     public void save(Furn furn) {
         furnMapper.insertSelective(furn);
+    }
+
+    @Override
+    public List<Furn> findAll() {
+        //如果传入为null表示返回所有的家居信息
+        return furnMapper.selectByExample(null);
     }
 }

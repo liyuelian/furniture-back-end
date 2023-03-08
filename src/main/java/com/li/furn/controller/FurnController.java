@@ -6,9 +6,11 @@ import com.li.furn.service.FurnService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author 李
@@ -34,5 +36,15 @@ public class FurnController {
         //如果没有出现异常，就返回成功
         Msg success = Msg.success();
         return success;
+    }
+
+    @RequestMapping("/furns")
+    @ResponseBody
+    public Msg listFurns() {
+        List<Furn> furnList = furnService.findAll();
+        //将数据封装到 Meg对象中返回
+        Msg msg = Msg.success();
+        msg.add("furnList", furnList);
+        return msg;
     }
 }
