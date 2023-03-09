@@ -45,4 +45,18 @@ public class FurnServiceTest {
             System.out.println("furn=" + furn);
         }
     }
+
+    @Test
+    public void update(){
+        Furn furn = new Furn();
+        furn.setId(1);//修改第一条记录
+        furn.setName("舒适沙发");
+        furn.setMaker("大象之家");
+        //  因为imgPath有默认值，
+        // 如果我们不希望生成的update对数据库的img字段修改，
+        // 就显示地设置nul
+        furn.setImgPath(null);
+        furnService.update(furn);
+
+    }
 }

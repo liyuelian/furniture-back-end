@@ -4,10 +4,7 @@ import com.li.furn.bean.Furn;
 import com.li.furn.bean.Msg;
 import com.li.furn.service.FurnService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -46,5 +43,12 @@ public class FurnController {
         Msg msg = Msg.success();
         msg.add("furnList", furnList);
         return msg;
+    }
+
+    @PutMapping("/update")
+    @ResponseBody
+    public Msg update(@RequestBody Furn furn) {
+        furnService.update(furn);
+        return Msg.success();
     }
 }

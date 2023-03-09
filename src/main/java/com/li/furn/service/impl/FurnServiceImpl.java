@@ -29,4 +29,10 @@ public class FurnServiceImpl implements FurnService {
         //如果传入为null表示返回所有的家居信息
         return furnMapper.selectByExample(null);
     }
+
+    @Override
+    public void update(Furn furn) {
+        //如果furn的某个属性不为null就进行修改
+        furnMapper.updateByPrimaryKeySelective(furn);
+    }
 }

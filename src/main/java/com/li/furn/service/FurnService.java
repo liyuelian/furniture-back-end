@@ -13,4 +13,6 @@ public interface FurnService {
     public void save(Furn furn);
     //查询所有的家居信息
     public List<Furn> findAll();
+    //修改家居信息
+    public void update(Furn furn);
 }
