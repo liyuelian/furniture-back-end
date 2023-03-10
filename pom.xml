@@ -90,10 +90,18 @@
       <version>2.12.4</version>
     </dependency>
 
+    <!--引入mybatis pageHelper分页插件-->
     <dependency>
       <groupId>com.github.pagehelper</groupId>
       <artifactId>pagehelper</artifactId>
       <version>5.2.1</version>
+    </dependency>
+
+    <!--引入JSR303数据校验支持-->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>6.1.0.Final</version>
     </dependency>
   </dependencies>
 

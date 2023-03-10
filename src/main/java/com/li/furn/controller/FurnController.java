@@ -1,16 +1,20 @@
 package com.li.furn.controller;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.li.furn.bean.Furn;
 import com.li.furn.bean.Msg;
 import com.li.furn.service.FurnService;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 李
@@ -25,17 +29,31 @@ public class FurnController {
      * 1.响应客户端添加家居的请求
      * 2.@RequestBody 注解将客户端提交的json数据封装成 Javabean 对象。
      * 3.@ResponseBody 服务器返回的数据是按照json来返回的（底层是按照 http协议进行协商）
+     * 4.@Validated 对接收的信息进行校验
+     * 5.Errors用来接收校验可能出现的错误信息
      *
      * @param furn
      * @return
      */
     @ResponseBody
     @PostMapping("/save")
-    public Msg save(@RequestBody Furn furn) {
-        furnService.save(furn);
-        //如果没有出现异常，就返回成功
-        Msg success = Msg.success();
-        return success;
+    public Msg save(@Validated @RequestBody Furn furn, Errors errors) {
+        Map<Object, Object> map = new HashMap<>();
+
+        List<FieldError> fieldErrors = errors.getFieldErrors();
+
+        for (FieldError fieldError : fieldErrors) {
+            map.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        if (map.isEmpty()) {//说明后端校验没有出现错误
+            furnService.save(furn);
+            //如果没有出现异常，就返回成功
+            return Msg.success();
+        } else {
+            //校验失败，将校验错误信息封装到Msg对象，并返回
+            return Msg.fail().add("errorMsg", map);
+        }
     }
 
     @RequestMapping("/furns")
