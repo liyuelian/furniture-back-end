@@ -93,4 +93,23 @@ public class FurnController {
         //三、将PageInfo封装到Msg对象并返回
         return Msg.success().add("pageInfo", pageInfo);
     }
+
+    /**
+     * 根据家居名进行分页查询-条件
+     *
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/furnsByConditionPage")
+    @ResponseBody
+    public Msg listFurnsByConditionPage(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "5") Integer pageSize,
+            @RequestParam(defaultValue = "") String search) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Furn> furnList = furnService.findByCondition(search);
+        PageInfo pageInfo = new PageInfo(furnList, pageSize);
+        return Msg.success().add("pageInfo", pageInfo);
+    }
 }

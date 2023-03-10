@@ -1,9 +1,11 @@
 package com.li.furn.service.impl;
 
 import com.li.furn.bean.Furn;
+import com.li.furn.bean.FurnExample;
 import com.li.furn.dao.FurnMapper;
 import com.li.furn.service.FurnService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -46,5 +48,16 @@ public class FurnServiceImpl implements FurnService {
         return furnMapper.selectByPrimaryKey(id);
     }
 
-
+    @Override
+    public List<Furn> findByCondition(String name) {
+        FurnExample furnExample = new FurnExample();
+        //通过criteria对象可以设置查询条件
+        FurnExample.Criteria criteria = furnExample.createCriteria();
+        //先判断name是否有具体的内容
+        if (StringUtils.hasText(name)) {
+            criteria.andNameLike("%" + name + "%");
+        }
+        //如果name没有
+        return furnMapper.selectByExample(furnExample);
+    }
 }

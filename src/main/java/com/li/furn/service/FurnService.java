@@ -19,4 +19,6 @@ public interface FurnService {
     public void del(Integer id);
     //根据家居id查询家居信息
     public Furn findById(Integer id);
+    //根据条件查询家居信息
+    public List<Furn> findByCondition(String name);
 }
