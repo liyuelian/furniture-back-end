@@ -51,4 +51,19 @@ public class FurnController {
         furnService.update(furn);
         return Msg.success();
     }
+
+    @DeleteMapping("/del/{id}")
+    @ResponseBody
+    public Msg del(@PathVariable Integer id) {
+        furnService.del(id);
+        return Msg.success();
+    }
+
+    //根据id返回对应的furn对象
+    @RequestMapping("/find/{id}")
+    @ResponseBody
+    public Msg findById(@PathVariable Integer id) {
+        Furn furn = furnService.findById(id);
+        return Msg.success().add("furn", furn);
+    }
 }

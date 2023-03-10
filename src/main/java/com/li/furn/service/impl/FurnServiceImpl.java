@@ -35,4 +35,16 @@ public class FurnServiceImpl implements FurnService {
         //如果furn的某个属性不为null就进行修改
         furnMapper.updateByPrimaryKeySelective(furn);
     }
+
+    @Override
+    public void del(Integer id) {
+        furnMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public Furn findById(Integer id) {
+        return furnMapper.selectByPrimaryKey(id);
+    }
+
+
 }

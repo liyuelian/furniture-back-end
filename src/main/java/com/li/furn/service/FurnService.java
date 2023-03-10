@@ -15,4 +15,8 @@ public interface FurnService {
     public List<Furn> findAll();
     //修改家居信息
     public void update(Furn furn);
+    //删除家居信息
+    public void del(Integer id);
+    //根据家居id查询家居信息
+    public Furn findById(Integer id);
 }
